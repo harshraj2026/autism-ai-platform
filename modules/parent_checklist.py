@@ -1,24 +1,4 @@
-# import streamlit as st
 
-# def checklist_section():
-#     st.header("📋 Daily Therapy Checklist")
-
-#     activities = [
-#         "Eye contact exercise",
-#         "Name response practice",
-#         "Imitation activity",
-#         "Gesture prompting",
-#         "Social play time"
-#     ]
-
-#     completed = {}
-#     for act in activities:
-#         completed[act] = st.checkbox(act)
-
-#     if st.button("Save Today’s Progress"):
-#         st.success("Therapy progress logged 💚")
-        #
-        #
 import streamlit as st
 from utils.logger import save_log
 

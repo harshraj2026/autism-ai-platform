@@ -1,0 +1,14 @@
+# Virtual environment
+venv/
+
+# Data folders
+data/uploads/
+data/logs/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+Thumbs.db
+.DS_Store

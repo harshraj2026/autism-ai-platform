@@ -1,5 +1,4 @@
-# modules/screening_logic.py
-# 🆕 DAY 6 – Intelligence Layer (Explainable)
+
 
 def calculate_screening_score(
     eye_contact: float,

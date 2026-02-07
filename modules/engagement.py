@@ -22,8 +22,10 @@ def engagement_section():
             "data/logs",
             "engagement.json",
             {
+                "agent":"engagement_monitor",
                 "mood": mood,
                 "engagement_score": engagement,
+                "engagement_normalized":engagement/10,
                 "notes": notes
             }
         )

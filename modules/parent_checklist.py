@@ -16,11 +16,21 @@ def checklist_section():
     for activity in activities:
         activities[activity] = st.checkbox(activity)
 
+    completed_count = sum(activities.values())
+
     if st.button("Save Therapy Progress"):
         save_log(
             "data/logs",
             "therapy_checklist.json",
-            activities
+            {
+                "agent": "parent_therapy",
+                "completed": completed_count,  
+                "total": len(activities),
+                "activities": activities
+            }
         )
-        st.success("Therapy progress logged successfully")
+        st.success
+        (
+             f"Therapy progress logged ({completed_count}/{len(activities)} completed)"
+        )
 

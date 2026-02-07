@@ -2,8 +2,11 @@ import json
 import os
 from datetime import datetime
 
-def save_log(filename, data):
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
+def save_log(folder,filename, data):
+    """
+      Saves structured JSON logs with timestamp for longitudinal tracking.
+    """
+    os.makedirs(folder, exist_ok=True)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filepath = os.path.join(folder, f"{timestamp}_{filename}")
 

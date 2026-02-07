@@ -15,8 +15,13 @@ def video_section():
         st.video(video)
         save_log(
             "data/logs",
-            "vodeo_upload.json",
-            {"video_uploaded":True}
+            "video_upload.json",
+
+            {
+             "agent": "child_observation",
+                "event": "video_uploaded",
+                "file_name": video.name
+            }
         )
         st.success("Video received for behavioral analysis")
        

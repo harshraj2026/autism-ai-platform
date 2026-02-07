@@ -2,47 +2,39 @@ import streamlit as st
 from modules.video_input import video_section
 from modules.parent_checklist import checklist_section
 from modules.engagement import engagement_section
-from modules.motivation_agent import motivation_section
+from modules.motivation_agent import motivation_section, daily_motivation_message
 from modules.screening_logic import calculate_screening_score
-from modules.motivation_agent import daily_motivation_message
 
 
 st.set_page_config(page_title="Autism Care Platform", layout="wide")
 
 st.title("🧠 AI-Enabled Autism Screening & Care Platform")
-page = st.sidebar.radio(
-    "Navigate",
-    [
-        "Child Observation",
-        "Therapy Tracker",
-        "Engagement Feedback",
-        "Motivation & Adherence",
-        "AI Screening Insight" 
-    ]
-)
-st.sidebar.header("Navigation")
-page = st.sidebar.radio("Go to", [
+
+page = st.sidebar.radio("Navigate", [
     "Child Observation",
     "Parent Therapy Tracker",
     "Engagement Feedback",
-    "Motivation & Adherence"
+    "Motivation & Adherence",
+    "Ai Screening Insight"
 ])
-
+#-------CHILD OBSERVATION-------
 if page == "Child Observation":
     video_section()
-
-elif page == "Therapy Tracker":
+#-------THERAPY TRACKER---------
+elif page == "Parent Therapy Tracker":
     checklist_section()
-
+#--------ENGAGEMENT-------------
 elif page == "Engagement Feedback":
     engagement_section()
-
+#---------MOTIVATION-------------
 elif page == "Motivation & Adherence":
     motivation_section()
-
+#-----------AI SCREENING---------
 elif page == "AI Screening Insight":
-    st.subheader("AI-Assisted Screening Insight")
-
+    st.subheader("🧠 AI-Assisted Screening Insight")
+    st.caption("This score assists clinicians. It is NOT a diagnosis.")
+    
+    #---BEHAVIOURAL MARKERS------
     eye_contact = st.slider("Eye Contact", 0.0, 1.0, 0.6)
     joint_attention = st.slider("Joint Attention", 0.0, 1.0, 0.5)
     gesture_use = st.slider("Gesture Use", 0.0, 1.0, 0.4)
@@ -58,13 +50,13 @@ elif page == "AI Screening Insight":
     )
 
     st.metric("Screening Confidence Score", f"{score} / 100")
-    st.caption("This score supports clinical evaluation. It is not a diagnosis.")
+    #----CONTEXT AWARE MOTIVATION---
+    st.divider()
+    st.subheader("Daily Motivation Insight")
 
-     # 🔽 NEW: MOCK DAILY CONTEXT (Day 6 refinement)
     streak_days = st.number_input("Therapy streak (days)", 0, 30, 3)
     user_type = st.selectbox("Message audience", ["parent", "child"])
     
-    # 🔁 UPDATED MOTIVATION AGENT CALL
     message = daily_motivation_message(
     checklist_completed=True,
     mood_score=4,

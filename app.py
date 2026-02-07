@@ -4,7 +4,7 @@ from modules.parent_checklist import checklist_section
 from modules.engagement import engagement_section
 from modules.motivation_agent import motivation_section, daily_motivation_message
 from modules.screening_logic import calculate_screening_score
-
+from modules.progress_analytics import analyze_progress
 
 st.set_page_config(page_title="Autism Care Platform", layout="wide")
 
@@ -15,7 +15,8 @@ page = st.sidebar.radio("Navigate", [
     "Parent Therapy Tracker",
     "Engagement Feedback",
     "Motivation & Adherence",
-    "Ai Screening Insight"
+    "Ai Screening Insight",
+    "Progress Insights"
 ])
 #-------CHILD OBSERVATION-------
 if page == "Child Observation":
@@ -62,7 +63,24 @@ elif page == "AI Screening Insight":
     mood_score=4,
     streak_days=streak_days,
     user_type=user_type
+    
 )
 
     st.info(message)
+#-----PROGRESS INSIGHTS--------
+elif page == "Progress Insights":
+    st.subheader("📊 Behavioral Progress Insights")
+
+    streak_days = st.number_input("Therapy streak (days)", 0, 30, 5)
+    avg_mood = st.slider("Average mood (last few days)", 1, 5, 3)
+    avg_engagement = st.slider("Average engagement", 0, 10, 6)
+
+    insight = analyze_progress(
+        streak_days=streak_days,
+        avg_mood=avg_mood,
+        avg_engagement=avg_engagement
+    )
+
+    st.success(insight)
+    st.caption("Insight is generated from observed behavioral trends, not diagnosis.")
  

@@ -30,44 +30,7 @@ elif page == "Engagement Feedback":
 #---------MOTIVATION-------------
 elif page == "Motivation & Adherence":
     motivation_section()
-#-----------AI SCREENING---------
-elif page == "AI Screening Insight":
-    st.subheader("🧠 AI-Assisted Screening Insight")
-    st.caption("This score assists clinicians. It is NOT a diagnosis.")
-    
-    #---BEHAVIOURAL MARKERS------
-    eye_contact = st.slider("Eye Contact", 0.0, 1.0, 0.6)
-    joint_attention = st.slider("Joint Attention", 0.0, 1.0, 0.5)
-    gesture_use = st.slider("Gesture Use", 0.0, 1.0, 0.4)
-    motor_coordination = st.slider("Motor Coordination", 0.0, 1.0, 0.5)
-    parent_engagement = st.slider("Parent Engagement", 0.0, 1.0, 0.7)
-
-    score = calculate_screening_score(
-        eye_contact,
-        joint_attention,
-        gesture_use,
-        motor_coordination,
-        parent_engagement
-    )
-
-    st.metric("Screening Confidence Score", f"{score} / 100")
-    #----CONTEXT AWARE MOTIVATION---
-    st.divider()
-    st.subheader("Daily Motivation Insight")
-
-    streak_days = st.number_input("Therapy streak (days)", 0, 30, 3)
-    user_type = st.selectbox("Message audience", ["parent", "child"])
-    
-    message = daily_motivation_message(
-    checklist_completed=True,
-    mood_score=4,
-    streak_days=streak_days,
-    user_type=user_type
-    
-)
-
-    st.info(message)
-#-----PROGRESS INSIGHTS--------
+    #-----PROGRESS INSIGHTS--------
 elif page == "Progress Insights":
     st.subheader("📊 Behavioral Progress Insights")
 
@@ -84,3 +47,41 @@ elif page == "Progress Insights":
     st.success(insight)
     st.caption("Insight is generated from observed behavioral trends, not diagnosis.")
  
+#-----------AI SCREENING---------
+elif page == "AI Screening Insight":
+    st.subheader("🧠 AI-Assisted Screening Insight")
+    st.caption("This score assists clinicians. It is NOT a diagnosis.")
+    
+    #---BEHAVIOURAL MARKERS------
+    eye_contact = st.slider("Eye Contact", 0.0, 1.0, 0.6)
+    joint_attention = st.slider("Joint Attention", 0.0, 1.0, 0.5)
+    gesture_use = st.slider("Gesture Use", 0.0, 1.0, 0.4)
+    motor_coordination = st.slider("Motor Coordination", 0.0, 1.0, 0.5)
+    parent_engagement = st.slider("Parent Engagement", 0.0, 1.0, 0.7)
+
+    score,explanation = calculate_screening_score(
+        eye_contact,
+        joint_attention,
+        gesture_use,
+        motor_coordination,
+        parent_engagement
+    )
+
+    st.metric("Screening Confidence Score", f"{score} / 100")
+    st.info(explanation)
+    #----CONTEXT AWARE MOTIVATION---
+    st.divider()
+    st.subheader("Daily Motivation Insight")
+
+    streak_days = st.number_input("Therapy streak (days)", 0, 30, 3)
+    user_type = st.selectbox("Message audience", ["parent", "child"])
+    
+    message = daily_motivation_message(
+    checklist_completed=True,
+    mood_score=4,
+    streak_days=streak_days,
+    user_type=user_type
+    
+)
+
+    st.info(message)

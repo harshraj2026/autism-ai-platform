@@ -1,5 +1,25 @@
 import streamlit as st
 
+
+def motivation_reason(
+    checklist_completed: bool,
+    mood_score: int,
+    streak_days: int
+):
+    if checklist_completed and mood_score >= 4:
+        return "High adherence and positive emotional state detected."
+
+    if checklist_completed:
+        return "Routine adherence detected despite emotional variability."
+
+    if mood_score <= 2:
+        return "Emotional fatigue detected. Supportive messaging applied."
+
+    if streak_days >= 3:
+        return "Consistency pattern identified."
+
+    return "Low engagement data — neutral encouragement applied."
+
 #------LOGIC SECTION-------
 
 def daily_motivation_message(

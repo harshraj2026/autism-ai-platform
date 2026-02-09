@@ -7,6 +7,10 @@ def analyze_progress(
     Analyzes behavioral progress trends.
     Returns a human-readable insight.
     """
+    # Safety clamps
+    streak_days = max(0, streak_days)
+    avg_mood = min(max(avg_mood, 1), 5)
+    avg_engagement = min(max(avg_engagement, 0), 10)
 
     if streak_days >= 7 and avg_mood >= 4 and avg_engagement >= 7:
         return "🚀 Strong positive progress. Current therapy approach is effective."

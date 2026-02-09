@@ -45,6 +45,21 @@ elif page == "Progress Insights":
     )
 
     st.success(insight)
+    from modules.therapy_recommendation import recommend_therapy
+
+    st.divider()
+    st.subheader("🧩 Personalized Therapy Guidance")
+
+    therapy_plan = recommend_therapy(
+    screening_score=70,  # placeholder until automated link
+    avg_mood=avg_mood,
+    avg_engagement=avg_engagement,
+    streak_days=streak_days
+    )
+
+    for item in therapy_plan:
+     st.write("•", item)
+
     st.caption("Insight is generated from observed behavioral trends, not diagnosis.")
  
 #-----------AI SCREENING---------

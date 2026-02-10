@@ -65,7 +65,8 @@ streak_days = st.number_input("Current therapy streak (days)", 0, 30, 2)
 
 user_type = st.selectbox(
         "Message audience",
-        ["parent", "child"]
+        ["parent", "child"],
+        key="motivation_user_type"
     )
 
 message = daily_motivation_message(

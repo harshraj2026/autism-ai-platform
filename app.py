@@ -32,61 +32,34 @@ elif page == "Motivation & Adherence":
     motivation_section()
     #-----PROGRESS INSIGHTS--------
 elif page == "Progress Insights":
- st.subheader("📊 Behavioral Progress Insights")
+    st.subheader("📊 Behavioral Progress Insights")
 
-streak_days = st.number_input("Therapy streak (days)", 0, 30, 5)
-avg_mood = st.slider("Average mood (last few days)", 1, 5, 3)
-avg_engagement = st.slider("Average engagement", 0, 10, 6)
+    from modules.data_engine import (
+        calculate_therapy_streak,
+        calculate_avg_mood,
+        calculate_avg_engagement
+    )
 
-insight = analyze_progress(
+    streak_days = calculate_therapy_streak()
+    avg_mood = calculate_avg_mood()
+    avg_engagement = calculate_avg_engagement()
+
+    st.metric("Therapy Sessions Logged", streak_days)
+    st.metric("Average Mood", avg_mood)
+    st.metric("Average Engagement", avg_engagement)
+
+    insight = analyze_progress(
         streak_days=streak_days,
         avg_mood=avg_mood,
         avg_engagement=avg_engagement
     )
 
-st.success(insight)
-from modules.therapy_recommendation import recommend_therapy
-
-st.divider()
-st.subheader("🧩 Personalized Therapy Guidance")
-
-therapy_plan = recommend_therapy(
-    screening_score=70,  # placeholder until automated link
-    avg_mood=avg_mood,
-    avg_engagement=avg_engagement,
-    streak_days=streak_days
-    )
-
-for item in therapy_plan:
-     st.write("•", item)
-
-st.caption("Insight is generated from observed behavioral trends, not diagnosis.")
-from modules.longitudinal_analysis import analyze_longitudinal_trends
-
-st.divider()
-st.subheader("📈 Longitudinal Progress Trends")
-
- # 🔽 Mock historical data (Day 10 placeholder)
-past_streaks = [1, 2, 3, 5, streak_days]
-past_moods = [2, 3, 3, 4, avg_mood]
-past_engagements = [4, 5, 6, 7, avg_engagement]
-
-trend_insights = analyze_longitudinal_trends(
-    past_streaks=past_streaks,
-    past_moods=past_moods,
-    past_engagements=past_engagements
-    )
-
-for insight in trend_insights:
-     st.write("•", insight)
-
-st.caption(
-    "Trend analysis is observational and supports long-term care planning."
-)
+    st.success(insight)
+    st.caption("Insight is generated from real stored behavioral data.")
 
  
 #-----------AI SCREENING---------
-if page == "AI Screening Insight":
+elif page == "AI Screening Insight":
  st.subheader("🧠 AI-Assisted Screening Insight")
  st.caption("This score assists clinicians. It is NOT a diagnosis.")
     

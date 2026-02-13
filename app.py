@@ -10,16 +10,79 @@ st.set_page_config(page_title="Autism Care Platform", layout="wide")
 
 st.title("🧠 AI-Enabled Autism Screening & Care Platform")
 
-page = st.sidebar.radio("Navigate", [
-    "Child Observation",
-    "Parent Therapy Tracker",
-    "Engagement Feedback",
-    "Motivation & Adherence",
-    "Ai Screening Insight",
-    "Progress Insights"
-])
+# Risk Calculation Functions
+
+def calculate_risk(score, therapy_days, mood_score):
+    risk = 0
+    
+    # Screening score weight
+    if score > 15:
+        risk += 3
+    elif score > 8:
+        risk += 2
+    else:
+        risk += 1
+
+    # Therapy consistency
+    if therapy_days < 3:
+        risk += 2
+    elif therapy_days < 7:
+        risk += 1
+
+    # Mood impact
+    if mood_score <= 2:
+        risk += 2
+    elif mood_score == 3:
+        risk += 1
+
+    return risk
+
+
+def classify_risk(risk_score):
+    if risk_score >= 6:
+        return "🔴 High Risk"
+    elif risk_score >= 4:
+        return "🟡 Moderate Risk"
+    else:
+        return "🟢 Low Risk"
+
+# -------------------------
+# Streamlit UI Starts Here
+# -------------------------
+
+# ---OLD SIDEBAR-----
+# page = st.sidebar.radio("Navigate", [
+#     "Child Observation",
+#     "Parent Therapy Tracker",
+#     "Engagement Feedback",
+#     "Motivation & Adherence",
+#     "Ai Screening Insight",
+#     "Progress Insights"
+# ])
+# ----NEW SIDEBAR-----
+page = st.sidebar.selectbox(
+    "Navigate",
+    ["Home", "AI Screening Insight", "Therapy Tracker", "Predictive Risk Layer"]
+)
+if page == "Predictive Risk Layer":
+
+    st.header("📊 Predictive Autism Risk Assessment")
+
+    screening_score = st.slider("Screening Score", 0, 20, 10)
+    therapy_days = st.number_input("Therapy Days This Week", 0, 7, 3)
+    mood_score = st.slider("Child Mood Score", 1, 5, 3)
+
+    risk_score = calculate_risk(screening_score, therapy_days, mood_score)
+    risk_level = classify_risk(risk_score)
+
+    st.subheader("Predicted Risk Level:")
+    st.markdown(f"## {risk_level}")
+    st.progress(risk_score / 8)
+
+
+
 #-------CHILD OBSERVATION-------
-if page == "Child Observation":
+elif page == "Child Observation":
     video_section()
 #-------THERAPY TRACKER---------
 elif page == "Parent Therapy Tracker":
@@ -96,3 +159,4 @@ message = daily_motivation_message(
     )
 
 st.info(message)
+

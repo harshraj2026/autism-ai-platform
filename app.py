@@ -11,7 +11,6 @@ st.set_page_config(page_title="Autism Care Platform", layout="wide")
 st.title("🧠 AI-Enabled Autism Screening & Care Platform")
 
 # Risk Calculation Functions
-
 def calculate_risk(score, therapy_days, mood_score):
     risk = 0
     
@@ -46,6 +45,7 @@ def classify_risk(risk_score):
     else:
         return "🟢 Low Risk"
 
+
 # -------------------------
 # Streamlit UI Starts Here
 # -------------------------
@@ -72,7 +72,34 @@ if page == "Predictive Risk Layer":
     therapy_days = st.number_input("Therapy Days This Week", 0, 7, 3)
     mood_score = st.slider("Child Mood Score", 1, 5, 3)
 
+    if "risk_history" not in st.session_state:
+     st.session_state.risk_history = []
     risk_score = calculate_risk(screening_score, therapy_days, mood_score)
+    if st.button("Save Risk Snapshot"):
+     st.session_state.risk_history.append(risk_score)
+     st.success("Risk data saved!")
+
+       #------Show Risk Trend Graph----
+ 
+    if len(st.session_state.risk_history) > 0:
+     st.subheader("📈 Risk Trend Over Time")
+     st.line_chart(st.session_state.risk_history)
+
+     # ----Add Smart Trend Alert-----
+
+    if len(st.session_state.risk_history) >= 2:
+     if st.session_state.risk_history[-1] > st.session_state.risk_history[-2]:
+        st.warning("⚠️ Risk is increasing. Early intervention recommended.")
+    elif st.session_state.risk_history[-1] < st.session_state.risk_history[-2]:
+        st.success("✅ Risk is decreasing. Good progress!")
+    elif st.session_state.risk_history[-1] == st.session_state.risk_history[-2]:
+        st.info("ℹ️ Risk level unchanged.")
+
+    # ------Add a reset button----
+    if st.button("Reset Risk History"):
+     st.session_state.risk_history = []
+     st.info("History cleared.")
+
     risk_level = classify_risk(risk_score)
 
     st.subheader("Predicted Risk Level:")

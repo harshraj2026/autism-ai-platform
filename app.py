@@ -9,6 +9,32 @@ from modules.progress_analytics import analyze_progress
 st.set_page_config(page_title="Autism Care Platform", layout="wide")
 
 st.title("🧠 AI-Enabled Autism Screening & Care Platform")
+#  ---- Recommendation Function ------
+def generate_recommendations(risk_score, mood_score, therapy_days):
+
+    recommendations = []
+
+    if risk_score >= 6:
+        recommendations.append("Increase therapy sessions frequency.")
+        recommendations.append("Consult developmental pediatrician.")
+        recommendations.append("Initiate structured behavioral intervention.")
+
+    elif risk_score >= 4:
+        recommendations.append("Maintain consistent therapy routine.")
+        recommendations.append("Monitor behavioral changes weekly.")
+    
+    else:
+        recommendations.append("Continue current therapy plan.")
+        recommendations.append("Encourage social interaction activities.")
+
+    if mood_score <= 2:
+        recommendations.append("Introduce emotional regulation exercises.")
+
+    if therapy_days < 3:
+        recommendations.append("Improve therapy adherence this week.")
+
+    return recommendations
+
 
 # Risk Calculation Functions
 def calculate_risk(score, therapy_days, mood_score):
@@ -105,6 +131,23 @@ if page == "Predictive Risk Layer":
     st.subheader("Predicted Risk Level:")
     st.markdown(f"## {risk_level}")
     st.progress(risk_score / 8)
+    
+    # ------Display Recommendations in UI------
+    
+    st.subheader("🧠 AI-Generated Recommendations")
+
+    recommendations = generate_recommendations(
+    risk_score,
+    mood_score,
+    therapy_days
+    )
+
+    for rec in recommendations:
+     st.write("•", rec)
+    #  -----Make It Look Professional----
+     st.info("Recommendations are generated using AI-based risk logic.")
+
+
 
 
 

@@ -129,6 +129,9 @@ page = st.sidebar.selectbox(
     "Navigate",
     ["Home", "AI Screening Insight", "Therapy Tracker", "Predictive Risk Layer"]
 )
+if "risk_history" not in st.session_state:
+ st.session_state.risk_history = []
+history = st.session_state.risk_history
 if page == "Predictive Risk Layer":
 
     st.header("📊 Predictive Autism Risk Assessment")
@@ -137,33 +140,48 @@ if page == "Predictive Risk Layer":
     therapy_days = st.number_input("Therapy Days This Week", 0, 7, 3)
     mood_score = st.slider("Child Mood Score", 1, 5, 3)
 
-    if "risk_history" not in st.session_state:
-     st.session_state.risk_history = []
     risk_score = calculate_risk(screening_score, therapy_days, mood_score)
-    if st.button("Save Risk Snapshot"):
+    if st.button("Save Risk Snapshot",key="risk_snapshot"):
      st.session_state.risk_history.append(risk_score)
      st.success("Risk data saved!")
 
        #------Show Risk Trend Graph----
  
-    if len(st.session_state.risk_history) > 0:
+    # if len(st.session_state.risk_history) > 0:
+    #  st.subheader("📈 Risk Trend Over Time")
+    #  st.line_chart(st.session_state.risk_history)
+    if len(history) > 0:
      st.subheader("📈 Risk Trend Over Time")
-     st.line_chart(st.session_state.risk_history)
+     st.line_chart(history)
+
 
      # ----Add Smart Trend Alert-----
 
-    if len(st.session_state.risk_history) >= 2:
-     if st.session_state.risk_history[-1] > st.session_state.risk_history[-2]:
+    # if len(st.session_state.risk_history) >= 2:
+    #  if st.session_state.risk_history[-1] > st.session_state.risk_history[-2]:
+    #     st.warning("⚠️ Risk is increasing. Early intervention recommended.")
+    # elif st.session_state.risk_history[-1] < st.session_state.risk_history[-2]:
+    #     st.success("✅ Risk is decreasing. Good progress!")
+    # elif st.session_state.risk_history[-1] == st.session_state.risk_history[-2]:
+    #     st.info("ℹ️ Risk level unchanged.")
+    if len(history) >= 2:
+      last = history[-1]
+      previous = history[-2]
+    
+      if last > previous:
         st.warning("⚠️ Risk is increasing. Early intervention recommended.")
-    elif st.session_state.risk_history[-1] < st.session_state.risk_history[-2]:
+
+      elif last < previous:
         st.success("✅ Risk is decreasing. Good progress!")
-    elif st.session_state.risk_history[-1] == st.session_state.risk_history[-2]:
+
+      else:
         st.info("ℹ️ Risk level unchanged.")
 
+
     # ------Add a reset button----
-    if st.button("Reset Risk History"):
-     st.session_state.risk_history = []
-     st.info("History cleared.")
+    if st.button("Reset Risk History",key="reset_history"):
+       st.session_state.risk_history = []
+       st.success("History cleared.")
 
     risk_level = classify_risk(risk_score)
 
@@ -182,26 +200,27 @@ if page == "Predictive Risk Layer":
     )
 
     for rec in recommendations:
-     st.write("•", rec)
+       st.write("•", rec)
     #  -----Make It Look Professional----
-     st.info("Recommendations are generated using AI-based risk logic.")
+    st.info("Recommendations are generated using AI-based risk logic.")
 
-    if st.button("Generate Clinical Report (PDF)"):
+    if st.button("Generate Clinical Report (PDF)",key="pdf_button"):
 
-     file = generate_pdf(
+       file = generate_pdf(
         screening_score,
         risk_level,
         therapy_days,
         mood_score,
         recommendations
-    )
+       )
 
-    with open(file, "rb") as f:
+       with open(file, "rb") as f:
         st.download_button(
             "Download Report",
-            f,
-            file_name="Autism_Risk_Report.pdf"
-        )
+             f,
+             file_name="Autism_Risk_Report.pdf",
+             key="download_pdf_risk"
+            )
 
 
 
@@ -248,40 +267,41 @@ elif page == "Progress Insights":
  
 #-----------AI SCREENING---------
 elif page == "AI Screening Insight":
- st.subheader("🧠 AI-Assisted Screening Insight")
- st.caption("This score assists clinicians. It is NOT a diagnosis.")
+ 
+    st.subheader("🧠 AI-Assisted Screening Insight")
+    st.caption("This score assists clinicians. It is NOT a diagnosis.")
     
     #---BEHAVIOURAL MARKERS------
-eye_contact = st.slider("Eye Contact", 0.0, 1.0, 0.6)
-joint_attention = st.slider("Joint Attention", 0.0, 1.0, 0.5)
-gesture_use = st.slider("Gesture Use", 0.0, 1.0, 0.4)
-motor_coordination = st.slider("Motor Coordination", 0.0, 1.0, 0.5)
-parent_engagement = st.slider("Parent Engagement", 0.0, 1.0, 0.7)
+    eye_contact = st.slider("Eye Contact", 0.0, 1.0, 0.6)
+    joint_attention = st.slider("Joint Attention", 0.0, 1.0, 0.5)
+    gesture_use = st.slider("Gesture Use", 0.0, 1.0, 0.4)
+    motor_coordination = st.slider("Motor Coordination", 0.0, 1.0, 0.5)
+    parent_engagement = st.slider("Parent Engagement", 0.0, 1.0, 0.7)
 
-score,explanation = calculate_screening_score(
-        eye_contact,
-        joint_attention,
-        gesture_use,
-        motor_coordination,
-        parent_engagement
-    )
-
-st.metric("Screening Confidence Score", f"{score} / 100")
-st.info(explanation)
-    #----CONTEXT AWARE MOTIVATION---
-st.divider()
-st.subheader("Daily Motivation Insight")
-
-streak_days = st.number_input("Therapy streak (days)", 0, 30, 3)
-user_type = st.selectbox("Message audience", ["parent", "child"], key="screening_user_type")
+    score,explanation = calculate_screening_score(
+            eye_contact,
+            joint_attention,
+            gesture_use,
+            motor_coordination,
+            parent_engagement
+        )
     
-message = daily_motivation_message(
-    checklist_completed=True,
-    mood_score=4,
-    streak_days=streak_days,
-    user_type=user_type
+    st.metric("Screening Confidence Score", f"{score} / 100")
+    st.info(explanation)
+        #----CONTEXT AWARE MOTIVATION---
+    st.divider()
+    st.subheader("Daily Motivation Insight")
     
-    )
-
-st.info(message)
+    streak_days = st.number_input("Therapy streak (days)", 0, 30, 3)
+    user_type = st.selectbox("Message audience", ["parent", "child"], key="screening_user_type")
+        
+    message = daily_motivation_message(
+        checklist_completed=True,
+        mood_score=4,
+        streak_days=streak_days,
+        user_type=user_type
+        
+        )
+    
+    st.info(message)
 

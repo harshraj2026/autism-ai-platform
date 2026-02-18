@@ -6,6 +6,45 @@ from modules.motivation_agent import motivation_section, daily_motivation_messag
 from modules.screening_logic import calculate_screening_score
 from modules.progress_analytics import analyze_progress
 
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, ListFlowable, ListItem
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import ListFlowable
+from reportlab.platypus import ListItem
+from reportlab.platypus import Paragraph
+from reportlab.platypus import Spacer
+
+def generate_pdf(screening_score, risk_level, therapy_days, mood_score, recommendations):
+
+    file_name = "Autism_Risk_Report.pdf"
+    doc = SimpleDocTemplate(file_name, pagesize=A4)
+    elements = []
+
+    styles = getSampleStyleSheet()
+    
+    elements.append(Paragraph("<b>Autism AI Risk Assessment Report</b>", styles["Title"]))
+    elements.append(Spacer(1, 0.3 * inch))
+
+    elements.append(Paragraph(f"Screening Score: {screening_score}", styles["Normal"]))
+    elements.append(Paragraph(f"Risk Level: {risk_level}", styles["Normal"]))
+    elements.append(Paragraph(f"Therapy Days This Week: {therapy_days}", styles["Normal"]))
+    elements.append(Paragraph(f"Mood Score: {mood_score}", styles["Normal"]))
+    elements.append(Spacer(1, 0.3 * inch))
+
+    elements.append(Paragraph("<b>AI Recommendations:</b>", styles["Heading2"]))
+    elements.append(Spacer(1, 0.2 * inch))
+
+    rec_list = [ListItem(Paragraph(rec, styles["Normal"])) for rec in recommendations]
+    elements.append(ListFlowable(rec_list, bulletType='bullet'))
+
+    doc.build(elements)
+
+    return file_name
+
+
+
 st.set_page_config(page_title="Autism Care Platform", layout="wide")
 
 st.title("🧠 AI-Enabled Autism Screening & Care Platform")
@@ -147,6 +186,22 @@ if page == "Predictive Risk Layer":
     #  -----Make It Look Professional----
      st.info("Recommendations are generated using AI-based risk logic.")
 
+    if st.button("Generate Clinical Report (PDF)"):
+
+     file = generate_pdf(
+        screening_score,
+        risk_level,
+        therapy_days,
+        mood_score,
+        recommendations
+    )
+
+    with open(file, "rb") as f:
+        st.download_button(
+            "Download Report",
+            f,
+            file_name="Autism_Risk_Report.pdf"
+        )
 
 
 
